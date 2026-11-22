@@ -1,0 +1,6 @@
+anthropic
+fastapi
+uvicorn
+numpy
+pydantic
+sentence-transformers
