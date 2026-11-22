@@ -139,3 +139,28 @@ Other known limits:
 - With streaming, the output guard runs after the text has already been shown. It can stop the answer from being cached and flag it in the log, but it can't un-show it.
 - The cache and note vectors live in memory and reset when the server restarts. A vector database or Redis would make them persist.
 - Notes are re-embedded on every startup, which is fine for a small file but wouldn't scale.
+
+## MCP server
+
+The notes search is also available as an MCP server, so MCP clients like Claude Code can search and quiz from the notes directly.
+
+| Primitive | Name | What it does |
+|---|---|---|
+| Tool | `notes_search(query, top_k)` | Semantic search over the notes, returns passages with scores |
+| Tool | `notes_list_sections()` | Lists the topics the notes cover |
+| Resource | `notes://all` | The full notes file, for attaching to a conversation |
+| Prompt | `quiz_me(topic)` | Searches the notes, then quizzes you one question at a time |
+
+Tools are read-only and annotated as such; arguments are validated with typed, bounded schemas, and invalid calls come back as tool errors the model can correct.
+
+Connect it to Claude Code:
+
+```bash
+claude mcp add study-notes -- /path/to/.venv/bin/python /path/to/study-assistant/mcp_server.py
+```
+
+Or run the demo client, which launches the server over stdio and calls each primitive:
+
+```bash
+python mcp_client_demo.py
+```
